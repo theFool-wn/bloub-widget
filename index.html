@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>bloub widget</title>
+    <meta name="description" content="Drop an animated SVG widget — breathing, blinking, gaze-following — into your page.">
+    <script>window.BLOUB_TOOL = true</script>
+    <link rel="stylesheet" href="assets/tool.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <script src="bloub.js"></script>
+</head>
+<body>
+<div id="tool">
+
+    <main class="layout">
+
+        <!-- LEFT: instructions (floating card, symmetric with right) -->
+        <aside class="card card-side card-left">
+            <section>
+                <h2 data-i18n="h_intro">介绍</h2>
+                <p class="intro-sub" data-i18n="intro_sub">将一个会呼吸、会眨眼、视线跟随鼠标的动画 SVG 挂件放进你的页面</p>
+            </section>
+            <section>
+                <h2 data-i18n="h_how">使用方法</h2>
+                <ol class="steps">
+                    <li data-i18n="how_1">在右侧选择形状与颜色，所有表情会同步更新</li>
+                    <li data-i18n="how_2">点击表情可在中间预览；拖拽表情到下方序列即可添加或替换</li>
+                    <li data-i18n="how_3">序列中拖动卡片可排序；点击卡片预览并高亮，点击编辑图标可单独修改形状与颜色</li>
+                    <li data-i18n="how_4">点击小球预览切换效果</li>
+                    <li data-i18n="how_5">选择一种模式，一键复制代码，插入你的页面</li>
+                </ol>
+            </section>
+            <section>
+                <h2 data-i18n="h_container">容器模式</h2>
+                <p data-i18n="container_desc">放入已设定尺寸的容器，如头像角落或侧边栏</p>
+            </section>
+            <section>
+                <h2 data-i18n="h_global">全局模式</h2>
+                <p data-i18n="global_desc">粘贴进 &lt;body&gt;，自动在窗口角落生成徽章</p>
+            </section>
+            <section>
+                <h2 data-i18n="h_advanced">高级设置</h2>
+                <p><span data-i18n="advanced_pre">进入</span> <a href="https://github.com/theFool-wn/bloub-widget" target="_blank" rel="noopener">GitHub</a> <span data-i18n="advanced_post">查看详细配置</span></p>
+            </section>
+        </aside>
+
+        <!-- CENTER: preview (no card) + sequence card + code card -->
+        <section class="center-col">
+
+            <div class="preview-stage">
+                <button id="lang-toggle" class="lang-toggle" type="button">EN</button>
+                <div id="preview" class="preview"></div>
+            </div>
+
+            <div class="card card-sequence">
+                <h2 data-i18n="h_editor">点击切换序列</h2>
+                <div id="sequence" class="sequence">
+                    <div id="sequence-empty" class="sequence-empty" data-i18n="seq_empty">将右侧表情拖到这里</div>
+                </div>
+            </div>
+
+            <div class="card card-code">
+                <div class="code-block code-block--container">
+                    <div class="code-head">
+                        <span data-i18n="code_container">容器模式</span>
+                        <button class="copy-btn" id="copy-container" type="button" aria-label="Copy">
+                            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                                <rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <rect x="4" y="4" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <pre class="code-pre"><code id="code-container"></code></pre>
+                </div>
+
+                <div class="code-block code-block--global">
+                    <div class="code-head">
+                        <span data-i18n="code_global">全局模式</span>
+                        <button class="copy-btn" id="copy-global" type="button" aria-label="Copy">
+                            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                                <rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <rect x="4" y="4" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <pre class="code-pre"><code id="code-global"></code></pre>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- RIGHT: pickers (floating card, symmetric with left) -->
+        <aside class="card card-side card-right">
+            <section class="picker">
+                <h2 data-i18n="h_expressions">表情</h2>
+                <div id="expr-grid" class="tile-grid tile-grid-4"></div>
+            </section>
+
+            <section class="picker">
+                <h2 data-i18n="h_shapes">形状</h2>
+                <div id="shape-grid" class="tile-grid tile-grid-4"></div>
+            </section>
+
+            <section class="picker">
+                <h2 data-i18n="h_colors">颜色</h2>
+                <div id="color-grid" class="swatch-grid"></div>
+            </section>
+        </aside>
+
+    </main>
+
+    <!-- Edit modal -->
+    <div id="edit-modal" class="modal-overlay" hidden>
+        <div class="modal-card">
+            <button id="edit-close" class="modal-close" type="button" aria-label="Close">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <div class="modal-body">
+                <div class="modal-preview">
+                    <div id="edit-preview" class="edit-preview-ball"></div>
+                    <div id="edit-label" class="edit-label"></div>
+                </div>
+                <div class="modal-editors">
+                    <div class="picker">
+                        <h3 data-i18n="h_shapes">形状</h3>
+                        <div id="edit-shape-grid" class="tile-grid tile-grid-4"></div>
+                    </div>
+                    <div class="picker">
+                        <h3 data-i18n="h_colors">颜色</h3>
+                        <div id="edit-color-grid" class="swatch-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="tool-footer">
+        <div class="footer-links">
+            <a href="https://github.com/theFool-wn/bloub-widget" target="_blank" rel="noopener">GitHub</a>
+            <span class="footer-sep">·</span>
+            <a href="https://wangnan.net/" target="_blank" rel="noopener">HomePage</a>
+            <span class="footer-sep">·</span>
+            <a href="mailto:me@wangnan.net">Email</a>
+        </div>
+        <div class="footer-meta">
+            <span>Built on</span>
+            <a href="https://github.com/jeremy-prt/bloub" target="_blank" rel="noopener">bloub</a>
+            <span class="footer-sep">·</span>
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>
+        </div>
+        <div class="footer-copy">&copy; 2026 Wang Nan. All rights reserved.</div>
+    </footer>
+
+</div>
+<script src="assets/tool.js"></script>
+</body>
+</html>

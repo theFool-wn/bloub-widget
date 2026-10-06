@@ -1,0 +1,25 @@
+{
+  "name": "bloub-widget",
+  "version": "1.0.0",
+  "description": "Animated SVG badge that breathes, blinks and watches the cursor; embeddable with one script tag.",
+  "main": "bloub.js",
+  "scripts": {
+    "build": "esbuild src/widget.ts --bundle --format=iife --global-name=Bloub --minify --target=es2020 --outfile=bloub.js --banner:js=\"/* bloub widget - https://bloub.wangnan.net | Copyright (c) 2026 Wang Nan, licensed under CC BY-NC-SA 4.0 | Built on bloub (https://github.com/jeremy-prt/bloub), Copyright (c) 2026 Jeremy Perret, released under the MIT License; see licenses/bloub-MIT-LICENSE */\" && esbuild src/tool/app.ts --bundle --format=iife --minify --target=es2020 --outfile=assets/tool.js",
+    "gif": "esbuild scripts/make-gif.ts --bundle --platform=node --format=esm --external:@resvg/* --outfile=scripts/.make-gif.mjs && node scripts/.make-gif.mjs"
+  },
+  "keywords": [
+    "svg",
+    "widget",
+    "badge",
+    "animation",
+    "morph",
+    "bloub"
+  ],
+  "author": "Wang Nan",
+  "license": "CC BY-NC-SA 4.0",
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "esbuild": "^0.25.12",
+    "gifenc": "^1.0.3"
+  }
+}
