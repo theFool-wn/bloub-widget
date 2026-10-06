@@ -90,7 +90,7 @@ const CSS = `
 }
 .bloub-fixed:hover { transform: translateY(-1px); box-shadow: 0 2px 7px rgba(0,0,0,0.22); }
 .bloub-fixed:focus-visible { outline: 2px solid #3b93f0; outline-offset: 2px; }
-.bloub-fixed .bloub-ball svg { transform: scale(1.12); transform-origin: center; }
+.bloub-fixed .bloub-ball svg { transform: scale(1.2); transform-origin: center; }
 `
 
 let cssInjected = false
